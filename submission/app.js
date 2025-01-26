@@ -29,27 +29,47 @@ function buildCharts(id) {
 
     d3.json("https://static.bc-edx.com/data/dl-1-2/m14/lms/starter/samples.json").then((response) => {
 
-        // bar chart
         let selectedSample = response["samples"].find(sample => sample.id == id)
 
-        let trace = {
+        // bar chart
+        let traceBar = {
             type: "bar",
             orientation: "h",
             x: selectedSample["sample_values"].slice(0, 10).reverse(),
             y: selectedSample["otu_ids"].slice(0, 10).map(id => `OTU ${id}`).reverse(),
             text: selectedSample["otu_labels"].slice(0, 10).reverse()
         }
-        let data = [trace]
+        let dataBar = [traceBar]
 
-        let layout = {
+        let layoutBar = {
             title: "Top 10 Bacterial Cultures Found",
             xaxis: {title:"Number of Bacteria"}
         }
 
-        Plotly.newPlot("bar", data, layout)
+        Plotly.newPlot("bar", dataBar, layoutBar)
 
         // bubble chart
-        // ...
+        let traceBubble = {
+            mode: "markers",
+            marker: {
+                size: selectedSample["sample_values"],
+                color: selectedSample["otu_ids"],
+                colorscale: "Earth"
+            },
+            x: selectedSample["otu_ids"],
+            y: selectedSample["sample_values"],
+            text: selectedSample["otu_labels"]
+        }
+        let dataBubble = [traceBubble]
+
+        let layoutBubble = {
+            title: "Bacteria Cultures Per Sample",
+            xaxis: {title: "OTU ID"},
+            yaxis: {title: "Number of Bacteria"},
+            showlegend: false
+        }
+
+        Plotly.newPlot("bubble", dataBubble, layoutBubble)
 
     })
 
