@@ -5,14 +5,14 @@ function init() {
 
         let names = response["names"]
 
-        let select = d3.select("#selDataset")
+        let selectID = d3.select("#selDataset")
         names.forEach(id => {
-            select.append("option").attr("value", id).text(`#${id}`)
+            selectID.append("option").attr("value", id).text(`#${id}`)
         })
 
         // create charts with the first entry
         buildCharts(response["samples"][0]["id"])
-        buildMetadata()
+        buildMetadata(response["samples"][0]["id"])
 
     })
 
@@ -21,7 +21,7 @@ function init() {
 function onOptionChanged(value) {
 
     buildCharts(value)
-    buildMetadata()
+    buildMetadata(value)
 
 }
 
@@ -75,11 +75,17 @@ function buildCharts(id) {
 
 }
 
-function buildMetadata(sample) {
+function buildMetadata(id) {
 
-    d3.json("https://static.bc-edx.com/data/dl-1-2/m14/lms/starter/samples.json").then((data) => {
+    d3.json("https://static.bc-edx.com/data/dl-1-2/m14/lms/starter/samples.json").then((response) => {
 
-        // ...
+        let selectedSample = response["metadata"].find(sample => sample.id == id)
+        
+        let divMetadata = d3.select("#sample-metadata")
+        divMetadata.html("") // clear p elements
+        for (const key in selectedSample) {
+            divMetadata.append("p").text(`${key}: ${selectedSample[key]}`)
+        }
 
     })
 
